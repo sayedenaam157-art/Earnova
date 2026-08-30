@@ -3,24 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Earnova</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      text-align: center;
+      background: #f2f4f7;
+      color: #222;
     }
 
     .app {
+      width: 100%;
       max-width: 500px;
       margin: auto;
-      padding: 30px 20px;
+      padding: 25px 18px;
     }
 
-    h1 {
-      margin-top: 20px;
+    .header {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .header p {
+      color: #777;
+      margin-top: 8px;
     }
 
     .points {
@@ -28,17 +45,61 @@
       border-radius: 20px;
       padding: 25px;
       margin: 25px 0;
-      font-size: 24px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .points-title {
+      font-size: 15px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .points-number {
+      font-size: 36px;
+      font-weight: bold;
     }
 
     button {
       width: 100%;
-      padding: 16px;
+      padding: 17px;
       margin: 8px 0;
       border: none;
-      border-radius: 14px;
+      border-radius: 15px;
+      background: white;
       font-size: 17px;
+      font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .section {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 21px;
+    }
+
+    .close {
+      background: #eee;
+      font-weight: normal;
+    }
+
+    .footer {
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -47,37 +108,83 @@
 
   <div class="app">
 
-    <h1>🎯 Earnova</h1>
-
-    <div class="points">
-      ⭐ <span id="points">0</span> Points
+    <div class="header">
+      <h1>🎯 Earnova</h1>
+      <p>Earn points by completing simple tasks.</p>
     </div>
 
-    <button onclick="dailyReward()">🎁 Daily Reward</button>
+    <div class="points">
+      <div class="points-title">Your Points</div>
+      <div class="points-number">
+        ⭐ <span id="points">0</span>
+      </div>
+    </div>
 
-    <button onclick="tasks()">📋 Tasks</button>
+    <button onclick="dailyReward()">
+      🎁 Daily Reward
+    </button>
 
-    <button onclick="invite()">👥 Invite Friends</button>
+    <button onclick="showTasks()">
+      📋 Tasks
+    </button>
+
+    <button onclick="inviteFriends()">
+      👥 Invite Friends
+    </button>
+
+    <div id="tasksSection" class="section">
+      <h2>📋 Tasks</h2>
+      <p>New tasks will be available soon.</p>
+      <button class="close" onclick="closeSections()">
+        Close
+      </button>
+    </div>
+
+    <div id="inviteSection" class="section">
+      <h2>👥 Invite Friends</h2>
+      <p>Referral system will be available soon.</p>
+      <button class="close" onclick="closeSections()">
+        Close
+      </button>
+    </div>
+
+    <div class="footer">
+      © 2026 Earnova
+    </div>
 
   </div>
 
   <script>
+
     let points = 0;
 
     function dailyReward() {
-      points += 10;
+      points = points + 10;
+
       document.getElementById("points").innerText = points;
+
       alert("🎉 You earned 10 points!");
     }
 
-    function tasks() {
-      alert("📋 Tasks will be available soon.");
+    function showTasks() {
+      closeSections();
+
+      document.getElementById("tasksSection").style.display = "block";
     }
 
-    function invite() {
-      alert("👥 Referral system will be available soon.");
+    function inviteFriends() {
+      closeSections();
+
+      document.getElementById("inviteSection").style.display = "block";
     }
+
+    function closeSections() {
+      document.getElementById("tasksSection").style.display = "none";
+
+      document.getElementById("inviteSection").style.display = "none";
+    }
+
   </script>
 
 </body>
-  </html>
+        </html>
