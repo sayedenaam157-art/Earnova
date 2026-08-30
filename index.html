@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Earnova</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -29,12 +35,13 @@
     h1 {
       margin-top: 20px;
       font-size: 42px;
+      margin-bottom: 10px;
     }
 
     .subtitle {
       color: #777;
       font-size: 18px;
-      margin-bottom: 40px;
+      margin-bottom: 35px;
     }
 
     .points {
@@ -63,7 +70,7 @@
     button {
       width: 100%;
       padding: 20px;
-      margin: 10px 0;
+      margin: 9px 0;
       border: none;
       border-radius: 18px;
       background: white;
@@ -75,10 +82,6 @@
 
     button:active {
       transform: scale(0.98);
-    }
-
-    .reward {
-      background: #fff;
     }
 
     .disabled {
@@ -93,12 +96,65 @@
       color: #555;
     }
 
+    .referral-box {
+      display: none;
+      background: white;
+      padding: 20px;
+      margin-top: 10px;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+    }
+
+    .referral-box h3 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    .referral-box p {
+      color: #777;
+      line-height: 1.5;
+    }
+
+    #referralLink {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .task-box {
+      display: none;
+      background: white;
+      padding: 20px;
+      margin-top: 10px;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+    }
+
+    .task-box h3 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    .task {
+      background: #f2f4f7;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 10px;
+      text-align: left;
+    }
+
     footer {
       margin-top: 50px;
       color: #aaa;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
@@ -110,6 +166,9 @@
       Earn points by completing simple tasks.
     </div>
 
+
+    <!-- POINTS -->
+
     <div class="points">
 
       <div class="points-title">
@@ -117,25 +176,92 @@
       </div>
 
       <div>
+
         <span class="star">⭐</span>
-        <span class="points-number" id="points">0</span>
+
+        <span
+          class="points-number"
+          id="points"
+        >
+          0
+        </span>
+
       </div>
 
     </div>
 
-    <button id="dailyButton" class="reward" onclick="dailyReward()">
+
+    <!-- DAILY REWARD -->
+
+    <button
+      id="dailyButton"
+      onclick="dailyReward()"
+    >
       🎁 Daily Reward
     </button>
 
+
     <div id="message"></div>
 
-    <button onclick="tasks()">
+
+    <!-- TASKS -->
+
+    <button onclick="showTasks()">
       📋 Tasks
     </button>
 
-    <button onclick="invite()">
+
+    <div
+      id="taskBox"
+      class="task-box"
+    >
+
+      <h3>📋 Tasks</h3>
+
+      <p>
+        Complete tasks and earn more points.
+      </p>
+
+      <div class="task">
+        🔜 More tasks coming soon...
+      </div>
+
+    </div>
+
+
+    <!-- INVITE -->
+
+    <button onclick="showReferral()">
       👥 Invite Friends
     </button>
+
+
+    <div
+      id="referralBox"
+      class="referral-box"
+    >
+
+      <h3>👥 Invite Friends</h3>
+
+      <p>
+        Invite your friends to Earnova.
+      </p>
+
+      <input
+        id="referralLink"
+        readonly
+      >
+
+      <button onclick="copyReferral()">
+        📋 Copy Referral Link
+      </button>
+
+      <button onclick="shareReferral()">
+        📤 Share with Friends
+      </button>
+
+    </div>
+
 
     <footer>
       © 2026 Earnova
@@ -144,41 +270,61 @@
   </div>
 
 
+
   <script>
 
-    // مقدار اولیه امتیاز
-    let points = Number(localStorage.getItem("earnova_points")) || 0;
+    /* =========================
+       POINTS SYSTEM
+    ========================= */
 
-    // نمایش امتیاز
-    document.getElementById("points").innerText = points;
+    let points =
+      Number(
+        localStorage.getItem("earnova_points")
+      ) || 0;
 
 
-    // بررسی آخرین دریافت جایزه
-    function checkDailyReward() {
+    document.getElementById("points")
+      .innerText = points;
+
+
+
+    /* =========================
+       DAILY REWARD
+    ========================= */
+
+    function canGetDailyReward() {
 
       const lastReward =
-        localStorage.getItem("earnova_daily_reward");
+        localStorage.getItem(
+          "earnova_daily_reward"
+        );
 
       if (!lastReward) {
         return true;
       }
 
-      const today = new Date().toDateString();
+      const today =
+        new Date().toDateString();
 
       return lastReward !== today;
     }
 
 
-    // دریافت جایزه روزانه
+
     function dailyReward() {
 
       const button =
-        document.getElementById("dailyButton");
+        document.getElementById(
+          "dailyButton"
+        );
 
       const message =
-        document.getElementById("message");
+        document.getElementById(
+          "message"
+        );
 
-      if (!checkDailyReward()) {
+
+      if (!canGetDailyReward()) {
 
         message.innerText =
           "⏳ You already received today's reward.";
@@ -187,18 +333,21 @@
       }
 
 
-      // اضافه کردن 10 امتیاز
+      /* Give 10 points */
+
       points += 10;
 
 
-      // ذخیره امتیاز
+      /* Save points */
+
       localStorage.setItem(
         "earnova_points",
         points
       );
 
 
-      // ثبت تاریخ دریافت جایزه
+      /* Save today's date */
+
       const today =
         new Date().toDateString();
 
@@ -208,48 +357,197 @@
       );
 
 
-      // نمایش امتیاز جدید
-      document.getElementById("points")
-        .innerText = points;
+      /* Update screen */
+
+      document.getElementById(
+        "points"
+      ).innerText = points;
 
 
-      // پیام موفقیت
       message.innerText =
         "🎉 You received 10 points!";
 
 
-      // غیرفعال کردن دکمه
-      button.classList.add("disabled");
-    }
-
-
-    function tasks() {
-
-      alert(
-        "📋 Tasks will be available soon."
+      button.classList.add(
+        "disabled"
       );
 
     }
 
 
-    function invite() {
 
-      alert(
-        "👥 Referral system will be available soon."
+    /* =========================
+       REFERRAL SYSTEM
+    ========================= */
+
+    function getReferralCode() {
+
+      let code =
+        localStorage.getItem(
+          "earnova_referral_code"
+        );
+
+
+      if (!code) {
+
+        code =
+          "earnova_" +
+          Math.random()
+            .toString(36)
+            .substring(2, 10);
+
+
+        localStorage.setItem(
+          "earnova_referral_code",
+          code
+        );
+
+      }
+
+
+      return code;
+
+    }
+
+
+
+    function showReferral() {
+
+      const box =
+        document.getElementById(
+          "referralBox"
+        );
+
+      const link =
+        document.getElementById(
+          "referralLink"
+        );
+
+
+      const code =
+        getReferralCode();
+
+
+      const referralLink =
+        window.location.origin +
+        window.location.pathname +
+        "?ref=" +
+        code;
+
+
+      link.value =
+        referralLink;
+
+
+      box.style.display =
+        "block";
+
+
+      document.getElementById(
+        "taskBox"
+      ).style.display = "none";
+
+    }
+
+
+
+    function copyReferral() {
+
+      const link =
+        document.getElementById(
+          "referralLink"
+        );
+
+
+      navigator.clipboard
+        .writeText(link.value)
+        .then(function() {
+
+          alert(
+            "✅ Referral link copied!"
+          );
+
+        })
+        .catch(function() {
+
+          alert(
+            "Please copy the link manually."
+          );
+
+        });
+
+    }
+
+
+
+    function shareReferral() {
+
+      const link =
+        document.getElementById(
+          "referralLink"
+        ).value;
+
+
+      const text =
+        "🎯 Join Earnova and earn points!";
+
+
+      const telegramUrl =
+        "https://t.me/share/url?url=" +
+        encodeURIComponent(link) +
+        "&text=" +
+        encodeURIComponent(text);
+
+
+      window.open(
+        telegramUrl,
+        "_blank"
       );
 
     }
 
 
-    // هنگام باز شدن صفحه بررسی شود
-    if (!checkDailyReward()) {
 
-      document.getElementById("dailyButton")
-        .classList.add("disabled");
+    /* =========================
+       TASKS
+    ========================= */
+
+    function showTasks() {
+
+      const box =
+        document.getElementById(
+          "taskBox"
+        );
+
+
+      box.style.display =
+        "block";
+
+
+      document.getElementById(
+        "referralBox"
+      ).style.display = "none";
+
+    }
+
+
+
+    /* =========================
+       STARTUP CHECK
+    ========================= */
+
+    if (!canGetDailyReward()) {
+
+      document.getElementById(
+        "dailyButton"
+      ).classList.add(
+        "disabled"
+      );
 
     }
 
   </script>
 
 </body>
+
 </html>
