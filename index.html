@@ -16,90 +16,86 @@
       font-family: Arial, sans-serif;
       background: #f2f4f7;
       color: #222;
+      text-align: center;
     }
 
     .app {
       width: 100%;
       max-width: 500px;
       margin: auto;
-      padding: 25px 18px;
+      padding: 30px 20px;
     }
 
-    .header {
-      text-align: center;
-      margin-top: 15px;
+    h1 {
+      margin-top: 20px;
+      font-size: 42px;
     }
 
-    .header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    .header p {
+    .subtitle {
       color: #777;
-      margin-top: 8px;
+      font-size: 18px;
+      margin-bottom: 40px;
     }
 
     .points {
       background: white;
-      border-radius: 20px;
-      padding: 25px;
-      margin: 25px 0;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-radius: 25px;
+      padding: 30px 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     }
 
     .points-title {
-      font-size: 15px;
       color: #777;
-      margin-bottom: 8px;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
 
     .points-number {
-      font-size: 36px;
+      font-size: 55px;
       font-weight: bold;
+    }
+
+    .star {
+      font-size: 55px;
     }
 
     button {
       width: 100%;
-      padding: 17px;
-      margin: 8px 0;
+      padding: 20px;
+      margin: 10px 0;
       border: none;
-      border-radius: 15px;
+      border-radius: 18px;
       background: white;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
     }
 
     button:active {
       transform: scale(0.98);
     }
 
-    .section {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      margin-top: 20px;
-      display: none;
+    .reward {
+      background: #fff;
     }
 
-    .section h2 {
-      margin-top: 0;
-      font-size: 21px;
+    .disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .close {
-      background: #eee;
-      font-weight: normal;
+    #message {
+      min-height: 25px;
+      margin: 15px 0;
+      font-weight: bold;
+      color: #555;
     }
 
-    .footer {
-      text-align: center;
-      color: #999;
-      font-size: 13px;
-      margin-top: 30px;
+    footer {
+      margin-top: 50px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -108,83 +104,152 @@
 
   <div class="app">
 
-    <div class="header">
-      <h1>🎯 Earnova</h1>
-      <p>Earn points by completing simple tasks.</p>
+    <h1>🎯 Earnova</h1>
+
+    <div class="subtitle">
+      Earn points by completing simple tasks.
     </div>
 
     <div class="points">
-      <div class="points-title">Your Points</div>
-      <div class="points-number">
-        ⭐ <span id="points">0</span>
+
+      <div class="points-title">
+        Your Points
       </div>
+
+      <div>
+        <span class="star">⭐</span>
+        <span class="points-number" id="points">0</span>
+      </div>
+
     </div>
 
-    <button onclick="dailyReward()">
+    <button id="dailyButton" class="reward" onclick="dailyReward()">
       🎁 Daily Reward
     </button>
 
-    <button onclick="showTasks()">
+    <div id="message"></div>
+
+    <button onclick="tasks()">
       📋 Tasks
     </button>
 
-    <button onclick="inviteFriends()">
+    <button onclick="invite()">
       👥 Invite Friends
     </button>
 
-    <div id="tasksSection" class="section">
-      <h2>📋 Tasks</h2>
-      <p>New tasks will be available soon.</p>
-      <button class="close" onclick="closeSections()">
-        Close
-      </button>
-    </div>
-
-    <div id="inviteSection" class="section">
-      <h2>👥 Invite Friends</h2>
-      <p>Referral system will be available soon.</p>
-      <button class="close" onclick="closeSections()">
-        Close
-      </button>
-    </div>
-
-    <div class="footer">
+    <footer>
       © 2026 Earnova
-    </div>
+    </footer>
 
   </div>
 
+
   <script>
 
-    let points = 0;
+    // مقدار اولیه امتیاز
+    let points = Number(localStorage.getItem("earnova_points")) || 0;
 
+    // نمایش امتیاز
+    document.getElementById("points").innerText = points;
+
+
+    // بررسی آخرین دریافت جایزه
+    function checkDailyReward() {
+
+      const lastReward =
+        localStorage.getItem("earnova_daily_reward");
+
+      if (!lastReward) {
+        return true;
+      }
+
+      const today = new Date().toDateString();
+
+      return lastReward !== today;
+    }
+
+
+    // دریافت جایزه روزانه
     function dailyReward() {
-      points = points + 10;
 
-      document.getElementById("points").innerText = points;
+      const button =
+        document.getElementById("dailyButton");
 
-      alert("🎉 You earned 10 points!");
+      const message =
+        document.getElementById("message");
+
+      if (!checkDailyReward()) {
+
+        message.innerText =
+          "⏳ You already received today's reward.";
+
+        return;
+      }
+
+
+      // اضافه کردن 10 امتیاز
+      points += 10;
+
+
+      // ذخیره امتیاز
+      localStorage.setItem(
+        "earnova_points",
+        points
+      );
+
+
+      // ثبت تاریخ دریافت جایزه
+      const today =
+        new Date().toDateString();
+
+      localStorage.setItem(
+        "earnova_daily_reward",
+        today
+      );
+
+
+      // نمایش امتیاز جدید
+      document.getElementById("points")
+        .innerText = points;
+
+
+      // پیام موفقیت
+      message.innerText =
+        "🎉 You received 10 points!";
+
+
+      // غیرفعال کردن دکمه
+      button.classList.add("disabled");
     }
 
-    function showTasks() {
-      closeSections();
 
-      document.getElementById("tasksSection").style.display = "block";
+    function tasks() {
+
+      alert(
+        "📋 Tasks will be available soon."
+      );
+
     }
 
-    function inviteFriends() {
-      closeSections();
 
-      document.getElementById("inviteSection").style.display = "block";
+    function invite() {
+
+      alert(
+        "👥 Referral system will be available soon."
+      );
+
     }
 
-    function closeSections() {
-      document.getElementById("tasksSection").style.display = "none";
 
-      document.getElementById("inviteSection").style.display = "none";
+    // هنگام باز شدن صفحه بررسی شود
+    if (!checkDailyReward()) {
+
+      document.getElementById("dailyButton")
+        .classList.add("disabled");
+
     }
 
   </script>
 
 </body>
-        </html>
+</html>
