@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earnova</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .points {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin: 25px 0;
+      font-size: 24px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <h1>🎯 Earnova</h1>
+
+    <div class="points">
+      ⭐ <span id="points">0</span> Points
+    </div>
+
+    <button onclick="dailyReward()">🎁 Daily Reward</button>
+
+    <button onclick="tasks()">📋 Tasks</button>
+
+    <button onclick="invite()">👥 Invite Friends</button>
+
+  </div>
+
+  <script>
+    let points = 0;
+
+    function dailyReward() {
+      points += 10;
+      document.getElementById("points").innerText = points;
+      alert("🎉 You earned 10 points!");
+    }
+
+    function tasks() {
+      alert("📋 Tasks will be available soon.");
+    }
+
+    function invite() {
+      alert("👥 Referral system will be available soon.");
+    }
+  </script>
+
+</body>
+  </html>
