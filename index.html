@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Earnova</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -21,36 +22,33 @@
     }
 
     .app {
-      width: 100%;
       max-width: 500px;
       margin: auto;
-      padding: 30px 20px;
+      padding: 25px 18px 40px;
     }
 
     h1 {
-      margin-top: 20px;
-      font-size: 42px;
-      margin-bottom: 10px;
+      font-size: 40px;
+      margin: 15px 0 5px;
     }
 
     .subtitle {
       color: #777;
-      font-size: 17px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .points {
       background: white;
-      border-radius: 25px;
-      padding: 30px 20px;
+      border-radius: 24px;
+      padding: 28px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
     }
 
     .points-title {
       color: #777;
       font-size: 18px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .points-number {
@@ -58,40 +56,44 @@
       font-weight: bold;
     }
 
+    .star {
+      font-size: 45px;
+    }
+
     button {
       width: 100%;
-      padding: 18px;
-      margin: 8px 0;
-      border: none;
+      border: 0;
       border-radius: 17px;
       background: white;
+      padding: 18px;
+      margin: 8px 0;
       font-size: 19px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+      box-shadow: 0 4px 14px rgba(0,0,0,.07);
     }
 
     button:active {
-      transform: scale(0.98);
+      transform: scale(.98);
     }
 
-    .disabled {
-      opacity: 0.5;
-    }
-
-    #message {
-      min-height: 25px;
-      margin: 12px 0;
-      font-weight: bold;
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
     }
 
     .box {
       display: none;
       background: white;
-      padding: 20px;
-      margin-top: 10px;
       border-radius: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+      padding: 20px;
+      margin-top: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.07);
+    }
+
+    .box p {
+      color: #777;
+      line-height: 1.5;
     }
 
     #referralLink {
@@ -99,13 +101,26 @@
       padding: 13px;
       border: 1px solid #ddd;
       border-radius: 10px;
-      font-size: 13px;
       margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    #message {
+      min-height: 25px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .task {
+      background: #f2f4f7;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 10px;
     }
 
     footer {
-      margin-top: 40px;
       color: #aaa;
+      margin-top: 35px;
     }
   </style>
 </head>
@@ -117,7 +132,7 @@
   <h1>🎯 Earnova</h1>
 
   <div class="subtitle">
-    Earn points by completing tasks.
+    Earn points every day.
   </div>
 
   <div class="points">
@@ -127,17 +142,23 @@
     </div>
 
     <div>
-      ⭐
+      <span class="star">⭐</span>
       <span id="points" class="points-number">0</span>
     </div>
 
   </div>
 
+
+  <!-- DAILY REWARD -->
+
   <button id="dailyButton" onclick="dailyReward()">
-    🎁 Daily Reward
+    🎁 Daily Reward +10
   </button>
 
   <div id="message"></div>
+
+
+  <!-- TASKS -->
 
   <button onclick="showTasks()">
     📋 Tasks
@@ -147,11 +168,14 @@
 
     <h3>📋 Tasks</h3>
 
-    <p>
-      More tasks will be available soon.
-    </p>
+    <div class="task">
+      🔜 Tasks will be added soon.
+    </div>
 
   </div>
+
+
+  <!-- REFERRAL -->
 
   <button onclick="showReferral()">
     👥 Invite Friends
@@ -162,13 +186,16 @@
     <h3>👥 Invite Friends</h3>
 
     <p>
-      Invite friends and earn points.
+      Invite your friends and earn points.
     </p>
 
-    <input id="referralLink" readonly>
+    <input
+      id="referralLink"
+      readonly
+    >
 
     <button onclick="copyReferral()">
-      📋 Copy Link
+      📋 Copy Referral Link
     </button>
 
     <button onclick="shareReferral()">
@@ -176,6 +203,7 @@
     </button>
 
   </div>
+
 
   <footer>
     © 2026 Earnova
@@ -186,41 +214,48 @@
 
 <script>
 
-  /*
-    SUPABASE
-  */
+  /* =====================================
+     SUPABASE
+  ===================================== */
 
   const SUPABASE_URL =
     "https://gnlyytftmyvtcksycoxs.supabase.co";
 
+
   /*
-    اینجا Publishable key خودت را از Supabase بگذار.
-    فقط مقدار داخل کوتیشن را عوض کن.
+    فقط این قسمت را با Publishable Key
+    خودت عوض کن.
   */
 
   const SUPABASE_KEY =
     "sb_publishable_Rt5ec6hqvcUwNt-SsEEG0g_sua8iK4f";
 
 
-  /*
-    TELEGRAM
-  */
+  /* =====================================
+     TELEGRAM
+  ===================================== */
 
-  const tg = window.Telegram.WebApp;
+  const tg =
+    window.Telegram.WebApp;
 
   tg.ready();
   tg.expand();
 
 
-  /*
-    USER
-  */
+  /* =====================================
+     USER
+  ===================================== */
 
-  let telegramUser = tg.initDataUnsafe?.user;
+  const telegramUser =
+    tg.initDataUnsafe &&
+    tg.initDataUnsafe.user
+      ? tg.initDataUnsafe.user
+      : null;
 
-  let telegramId = "";
 
-  let username = "";
+  let telegramId;
+
+  let username;
 
 
   if (telegramUser) {
@@ -233,33 +268,39 @@
 
   } else {
 
+    /*
+      فقط برای تست خارج از تلگرام
+    */
+
     telegramId =
-      "browser_" +
+      "test_" +
       Math.random()
         .toString(36)
         .substring(2, 10);
 
-    username = "browser_user";
+    username =
+      "testuser";
 
   }
 
 
-  /*
-    REFERRAL FROM URL
-  */
+  /* =====================================
+     REFERRAL CODE
+  ===================================== */
 
-  const urlParams =
+  const params =
     new URLSearchParams(
       window.location.search
     );
 
+
   const referralCode =
-    urlParams.get("ref") || "";
+    params.get("ref") || "";
 
 
-  /*
-    API CALL
-  */
+  /* =====================================
+     API
+  ===================================== */
 
   async function apiRequest(data) {
 
@@ -279,14 +320,19 @@
         }
       );
 
-    return await response.json();
+
+    const result =
+      await response.json();
+
+
+    return result;
 
   }
 
 
-  /*
-    LOAD USER
-  */
+  /* =====================================
+     LOAD USER
+  ===================================== */
 
   async function loadUser() {
 
@@ -294,6 +340,8 @@
 
       const result =
         await apiRequest({
+
+          action: "login",
 
           telegram_id:
             telegramId,
@@ -317,43 +365,150 @@
         ).innerText =
           result.user.points || 0;
 
-        window.currentUser =
-          result.user;
 
         createReferralLink(
           result.user.referral_code
         );
 
+
+        /*
+          بررسی Daily Reward
+        */
+
+        const today =
+          new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+        if (
+          result.user.last_daily_reward ===
+          today
+        ) {
+
+          document.getElementById(
+            "dailyButton"
+          ).disabled = true;
+
+          document.getElementById(
+            "dailyButton"
+          ).innerText =
+            "✅ Reward Claimed Today";
+
+        }
+
       } else {
 
-        console.log(result);
+        showMessage(
+          "❌ Could not load user."
+        );
 
       }
 
     } catch (error) {
 
-      console.log(error);
+      console.error(error);
 
-      document.getElementById(
-        "message"
-      ).innerText =
-        "Connection error.";
+      showMessage(
+        "❌ Connection error."
+      );
 
     }
 
   }
 
 
-  /*
-    REFERRAL LINK
-  */
+  /* =====================================
+     DAILY REWARD
+  ===================================== */
+
+  async function dailyReward() {
+
+    const button =
+      document.getElementById(
+        "dailyButton"
+      );
+
+
+    button.disabled = true;
+
+    showMessage(
+      "⏳ Claiming reward..."
+    );
+
+
+    try {
+
+      const result =
+        await apiRequest({
+
+          action:
+            "daily_reward",
+
+          telegram_id:
+            telegramId,
+
+          username:
+            username
+
+        });
+
+
+      if (result.success) {
+
+        document.getElementById(
+          "points"
+        ).innerText =
+          result.points;
+
+
+        button.innerText =
+          "✅ Reward Claimed Today";
+
+
+        showMessage(
+          "🎉 You received 10 points!"
+        );
+
+      } else {
+
+        button.disabled = true;
+
+        showMessage(
+          "⏳ You already claimed today's reward."
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      button.disabled = false;
+
+      showMessage(
+        "❌ Connection error."
+      );
+
+    }
+
+  }
+
+
+  /* =====================================
+     REFERRAL
+  ===================================== */
 
   function createReferralLink(code) {
 
-    if (!code) return;
+    if (!code) {
+      return;
+    }
+
 
     const botUsername =
       "EarnovaRewardBot";
+
 
     const link =
       "https://t.me/" +
@@ -361,101 +516,14 @@
       "?startapp=" +
       encodeURIComponent(code);
 
+
     document.getElementById(
       "referralLink"
-    ).value = link;
+    ).value =
+      link;
 
   }
 
-
-  /*
-    DAILY REWARD
-  */
-
-  async function dailyReward() {
-
-  const message =
-    document.getElementById("message");
-
-  const button =
-    document.getElementById("dailyButton");
-
-  message.innerText =
-    "⏳ Claiming reward...";
-
-  try {
-
-    const result =
-      await apiRequest({
-
-        action: "daily_reward",
-
-        telegram_id:
-          telegramId,
-
-        username:
-          username
-
-      });
-
-
-    if (result.success) {
-
-      document.getElementById(
-        "points"
-      ).innerText =
-        result.points;
-
-      message.innerText =
-        "🎉 You received 10 points!";
-
-      button.classList.add(
-        "disabled"
-      );
-
-    } else {
-
-      message.innerText =
-        "⏳ You already claimed today's reward.";
-
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    message.innerText =
-      "❌ Something went wrong.";
-
-  }
-
-      }
-
-  }
-
-
-  /*
-    TASKS
-  */
-
-  function showTasks() {
-
-    document.getElementById(
-      "tasksBox"
-    ).style.display =
-      "block";
-
-    document.getElementById(
-      "referralBox"
-    ).style.display =
-      "none";
-
-  }
-
-
-  /*
-    REFERRAL
-  */
 
   function showReferral() {
 
@@ -464,6 +532,7 @@
     ).style.display =
       "block";
 
+
     document.getElementById(
       "tasksBox"
     ).style.display =
@@ -472,33 +541,33 @@
   }
 
 
-  /*
-    COPY
-  */
-
   function copyReferral() {
 
     const link =
       document.getElementById(
         "referralLink"
-      );
+      ).value;
+
 
     navigator.clipboard
-      .writeText(link.value)
-      .then(() => {
+      .writeText(link)
+      .then(function() {
+
+        showMessage(
+          "✅ Referral link copied!"
+        );
+
+      })
+      .catch(function() {
 
         alert(
-          "✅ Referral link copied!"
+          "Copy the link manually."
         );
 
       });
 
   }
 
-
-  /*
-    TELEGRAM SHARE
-  */
 
   function shareReferral() {
 
@@ -507,11 +576,12 @@
         "referralLink"
       ).value;
 
+
     const text =
       "🎯 Join Earnova and earn points!";
 
 
-    const telegramUrl =
+    const url =
       "https://t.me/share/url?url=" +
       encodeURIComponent(link) +
       "&text=" +
@@ -519,16 +589,50 @@
 
 
     window.open(
-      telegramUrl,
+      url,
       "_blank"
     );
 
   }
 
 
-  /*
-    START
-  */
+  /* =====================================
+     TASKS
+  ===================================== */
+
+  function showTasks() {
+
+    document.getElementById(
+      "tasksBox"
+    ).style.display =
+      "block";
+
+
+    document.getElementById(
+      "referralBox"
+    ).style.display =
+      "none";
+
+  }
+
+
+  /* =====================================
+     MESSAGE
+  ===================================== */
+
+  function showMessage(text) {
+
+    document.getElementById(
+      "message"
+    ).innerText =
+      text;
+
+  }
+
+
+  /* =====================================
+     START
+  ===================================== */
 
   loadUser();
 
