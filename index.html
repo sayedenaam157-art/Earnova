@@ -118,6 +118,24 @@
       margin-top: 10px;
     }
 
+    .task-title {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .task-description {
+      color: #777;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .task-status {
+      font-size: 14px;
+      margin: 8px 0;
+      min-height: 20px;
+    }
+
     footer {
       color: #aaa;
       margin-top: 35px;
@@ -169,7 +187,33 @@
     <h3>📋 Tasks</h3>
 
     <div class="task">
-      🔜 Tasks will be added soon.
+
+      <div class="task-title">
+        📢 Join Earnova Telegram
+      </div>
+
+      <div class="task-description">
+        Join our official Telegram channel
+        and earn 50 points.
+      </div>
+
+      <button onclick="openTask()">
+        📲 Join Channel
+      </button>
+
+      <div
+        id="taskStatus"
+        class="task-status"
+      ></div>
+
+      <button
+        id="claimTaskButton"
+        onclick="claimTask()"
+        disabled
+      >
+        🔒 Claim 50 Points
+      </button>
+
     </div>
 
   </div>
@@ -222,11 +266,6 @@
     "https://gnlyytftmyvtcksycoxs.supabase.co";
 
 
-  /*
-    فقط این قسمت را با Publishable Key
-    خودت عوض کن.
-  */
-
   const SUPABASE_KEY =
     "sb_publishable_Rt5ec6hqvcUwNt-SsEEG0g_sua8iK4f";
 
@@ -268,10 +307,6 @@
 
   } else {
 
-    /*
-      فقط برای تست خارج از تلگرام
-    */
-
     telegramId =
       "test_" +
       Math.random()
@@ -294,8 +329,20 @@
     );
 
 
-  const referralCode =
+  let referralCode =
     params.get("ref") || "";
+
+
+  if (
+    !referralCode &&
+    tg.initDataUnsafe &&
+    tg.initDataUnsafe.start_param
+  ) {
+
+    referralCode =
+      tg.initDataUnsafe.start_param;
+
+  }
 
 
   /* =====================================
@@ -312,11 +359,15 @@
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPABASE_KEY
+            "Content-Type":
+              "application/json",
+
+            "apikey":
+              SUPABASE_KEY
           },
 
-          body: JSON.stringify(data)
+          body:
+            JSON.stringify(data)
         }
       );
 
@@ -341,7 +392,8 @@
       const result =
         await apiRequest({
 
-          action: "login",
+          action:
+            "login",
 
           telegram_id:
             telegramId,
@@ -371,10 +423,6 @@
         );
 
 
-        /*
-          بررسی Daily Reward
-        */
-
         const today =
           new Date()
             .toISOString()
@@ -382,18 +430,29 @@
 
 
         if (
-          result.user.last_daily_reward ===
-          today
+          result.user.last_daily_reward
         ) {
 
-          document.getElementById(
-            "dailyButton"
-          ).disabled = true;
+          const rewardDate =
+            String(
+              result.user.last_daily_reward
+            ).split("T")[0];
 
-          document.getElementById(
-            "dailyButton"
-          ).innerText =
-            "✅ Reward Claimed Today";
+
+          if (
+            rewardDate === today
+          ) {
+
+            document.getElementById(
+              "dailyButton"
+            ).disabled = true;
+
+            document.getElementById(
+              "dailyButton"
+            ).innerText =
+              "✅ Reward Claimed Today";
+
+          }
 
         }
 
@@ -471,8 +530,6 @@
         );
 
       } else {
-
-        button.disabled = true;
 
         showMessage(
           "⏳ You already claimed today's reward."
@@ -612,6 +669,172 @@
       "referralBox"
     ).style.display =
       "none";
+
+  }
+
+
+  /* =====================================
+     OPEN TELEGRAM TASK
+  ===================================== */
+
+  function openTask() {
+
+    const channelUrl =
+      "https://t.me/EarnovaHub";
+
+
+    window.open(
+      channelUrl,
+      "_blank"
+    );
+
+
+    const status =
+      document.getElementById(
+        "taskStatus"
+      );
+
+
+    const button =
+      document.getElementById(
+        "claimTaskButton"
+      );
+
+
+    status.innerText =
+      "📲 Join the channel, then come back and claim your reward.";
+
+
+    setTimeout(function() {
+
+      button.disabled = false;
+
+      button.innerText =
+        "🎁 Claim 50 Points";
+
+    }, 1500);
+
+  }
+
+
+  /* =====================================
+     CLAIM TASK
+  ===================================== */
+
+  async function claimTask() {
+
+    const button =
+      document.getElementById(
+        "claimTaskButton"
+      );
+
+
+    const status =
+      document.getElementById(
+        "taskStatus"
+      );
+
+
+    button.disabled = true;
+
+
+    status.innerText =
+      "⏳ Checking Telegram membership...";
+
+
+    showMessage(
+      "⏳ Checking membership..."
+    );
+
+
+    try {
+
+      const result =
+        await apiRequest({
+
+          action:
+            "task_reward",
+
+          telegram_id:
+            telegramId,
+
+          username:
+            username,
+
+          task_id:
+            2
+
+        });
+
+
+      if (result.success) {
+
+        document.getElementById(
+          "points"
+        ).innerText =
+          result.points;
+
+
+        button.innerText =
+          "✅ Task Completed";
+
+
+        status.innerText =
+          "🎉 Task completed successfully!";
+
+
+        showMessage(
+          "🎉 You received " +
+          result.reward +
+          " points!"
+        );
+
+
+      } else {
+
+        button.disabled = false;
+
+
+        if (
+          result.joined === false
+        ) {
+
+          status.innerText =
+            "❌ You have not joined the channel yet.";
+
+          showMessage(
+            "❌ Join the channel first."
+          );
+
+        } else {
+
+          status.innerText =
+            result.error ||
+            "❌ Task could not be completed.";
+
+          showMessage(
+            result.error ||
+            "❌ Task could not be completed."
+          );
+
+        }
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      button.disabled = false;
+
+      status.innerText =
+        "❌ Connection error.";
+
+      showMessage(
+        "❌ Connection error."
+      );
+
+    }
 
   }
 
