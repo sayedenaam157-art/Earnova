@@ -265,7 +265,6 @@
   const SUPABASE_URL =
     "https://gnlyytftmyvtcksycoxs.supabase.co";
 
-
   const SUPABASE_KEY =
     "sb_publishable_Rt5ec6hqvcUwNt-SsEEG0g_sua8iK4f";
 
@@ -293,7 +292,6 @@
 
 
   let telegramId;
-
   let username;
 
 
@@ -674,19 +672,32 @@
 
 
   /* =====================================
-     OPEN TELEGRAM TASK
+     OPEN TELEGRAM CHANNEL
   ===================================== */
 
   function openTask() {
 
     const channelUrl =
-      "https://t.me/EarnovaHub";
+      "https://t.me/earnovahube";
 
 
-    window.open(
-      channelUrl,
-      "_blank"
-    );
+    if (
+      tg &&
+      tg.openTelegramLink
+    ) {
+
+      tg.openTelegramLink(
+        channelUrl
+      );
+
+    } else {
+
+      window.open(
+        channelUrl,
+        "_blank"
+      );
+
+    }
 
 
     const status =
@@ -862,4 +873,4 @@
 </script>
 
 </body>
-  </html>
+        </html>
